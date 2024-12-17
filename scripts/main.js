@@ -8,8 +8,8 @@ const energySystem = new EnergySystem({
     regenRate: 3,
     energyBarSelector: '#energyBar'
 });
-const element = document.getElementById('valueField');
-const incrementer = new RandomIncrementer(0.00, element);
+ const incrementer = new RandomIncrementer(0.00, document.getElementById('valueField'));
+
 
 function startListeningMotion() {
   window.addEventListener('devicemotion', (event) => {
@@ -22,7 +22,7 @@ function startListeningMotion() {
         return;
       }
     }
-
+    const incrementer = new RandomIncrementer(0.00, document.getElementById('valueField'));
     const { x, y, z } = acceleration;
     const shaking = isDeviceShaking(x, y, z);
 
