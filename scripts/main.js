@@ -1,6 +1,7 @@
 
 const requestBtn = document.getElementById('request-btn');
 const tree = document.getElementById('tree');
+const song = document.getElementById('song');
 
 function startListeningMotion() {
   window.addEventListener('devicemotion', (event) => {
@@ -48,6 +49,7 @@ requestBtn.addEventListener('click', async () => {
   snowInterval = setInterval(() => {
     createSnowflake();
   }, 200);
+  song.play();
 });
 function createSnowflake() {
     const snowflake = document.createElement('div');
