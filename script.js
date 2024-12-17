@@ -19,42 +19,27 @@ document.addEventListener('DOMContentLoaded', () => {
         tg.HapticFeedback.impactOccurred('medium');
     });
 
-    const shakeStatusEl = document.getElementById('shakeStatus');
-    const THRESHOLD = 5;
-    const  requestBtn = document.getElementById('requestBtn');
-    let isShaking = false;
+    const requestBtn = document.getElementById('requestBtn');
     requestBtn.addEventListener("click", async () => {
-        await DeviceMotionEvent.requestPermission();
-    });
-   function updateShakeStatus(newState) {
-        if (newState && !isShaking) {
-            isShaking = true;
-            shakeStatusEl.textContent = "є тряска";
-        } else if (!newState && isShaking) {
-            isShaking = false;
-            shakeStatusEl.textContent = "немає тряски";
+        console.log("START button clicked!");
+    
+        // Запит дозволу на доступ до гіроскопа (для iOS)
+        if (typeof DeviceMotionEvent.requestPermission === "function") {
+          try {
+            const permissionState = await DeviceMotionEvent.requestPermission();
+            if (permissionState === "granted") {
+              console.log("Gyroscope permission granted!");
+              startGame();
+            } else {
+              alert("Permission to access gyroscope was denied.");
+            }
+          } catch (error) {
+            alert("Error while requesting gyroscope permission.");
+          }
+        } else {
+          // Для Android та платформ, де дозвіл не потрібен
+          console.log("Gyroscope permission not required.");
+          startGame();
         }
-    }
-
-    // Обробник даних акселерометра
-    function onAccelerometerChanged(data) {
-        const { x } = data;
-        const shaking = Math.abs(x) > THRESHOLD;
-        updateShakeStatus(shaking);
-    }
-
-    // Кнопка для запиту доступу до акселерометра
-    startBtn.addEventListener('click', () => {
-        // Запускаємо акселерометр за допомогою Telegram API
-        tg.Accelerometer.start().then(() => {
-            console.log('Accelerometer started successfully');
-            // Слухаємо подію зміни
-            tg.onEvent('accelerometerChanged', onAccelerometerChanged);
-            startBtn.disabled = true; // Вимикаємо кнопку після успішного запуску
-            startBtn.textContent = "Акселерометр увімкнено";
-        }).catch(err => {
-            console.error('Failed to start accelerometer:', err);
-            alert('Не вдалося отримати доступ до акселерометра.');
-        });
-    });
+      });
 });
