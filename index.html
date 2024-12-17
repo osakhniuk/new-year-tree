@@ -1,23 +1,76 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>New Year Tree Shake</title>
-    <link rel="stylesheet" href="style.css"/>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Shake Detection</title>
+<style>
+  body {
+    font-family: sans-serif;
+    padding: 20px;
+  }
+  #status {
+    font-size: 24px;
+    font-weight: bold;
+  }
+</style>
 </head>
 <body>
+  <h1>Shake Detection in Telegram Mini App</h1>
+  <div id="status">Shaking: false</div>
 
-    <!-- Вставляємо SVG ялинку через img -->
-    <img src="tree.svg" alt="Ялинка" class="my-tree" />
-    <div class="container">
-        <h1>Детектор тряски</h1>
-        <p>Тряска: <span id="shakeStatus">немає тряски</span></p>
-        <button id="requestBtn">Запросити доступ до акселерометра</button>
-    </div>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script>
+    // Поріг, при перевищенні якого вважаємо, що пристрій труситься
+    const SHAKE_THRESHOLD = 15;
 
-    <script src="script.js"></script>
+    let lastX = null;
+    let lastY = null;
+    let lastZ = null;
+    let isShaking = false;
+    let statusElement = document.getElementById('status');
 
+    function checkShake(ax, ay, az) {
+      if (lastX === null || lastY === null || lastZ === null) {
+        // Якщо це перше вимірювання - просто запам'ятовуємо його
+        lastX = ax;
+        lastY = ay;
+        lastZ = az;
+        return false;
+      }
+
+      // Обчислюємо різницю між поточними та минулими значеннями
+      let deltaX = Math.abs(ax - lastX);
+      let deltaY = Math.abs(ay - lastY);
+      let deltaZ = Math.abs(az - lastZ);
+
+      // Запам'ятовуємо нові значення для наступного обчислення
+      lastX = ax;
+      lastY = ay;
+      lastZ = az;
+
+      // Перевірка чи перевищили ми поріг по якійсь осі
+      if (deltaX > SHAKE_THRESHOLD || deltaY > SHAKE_THRESHOLD || deltaZ > SHAKE_THRESHOLD) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    // Слухаємо події руху пристрою
+    window.addEventListener('devicemotion', (event) => {
+      let acceleration = event.accelerationIncludingGravity;
+      if (!acceleration) return; 
+      
+      let { x, y, z } = acceleration;
+
+      isShaking = checkShake(x, y, z);
+      statusElement.textContent = 'Shaking: ' + isShaking;
+    }, true);
+
+    // Опціонально можна використовувати Telegram WebApp API для інтеграції з Mini App
+    Telegram.WebApp.ready();
+    // При потребі, можна викликати Telegram.WebApp.sendData(...) для відправки даних боту або виконувати інші інтеграції
+  </script>
 </body>
 </html>
