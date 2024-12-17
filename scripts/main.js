@@ -2,10 +2,10 @@
 const requestBtn = document.getElementById('request-btn');
 const tree = document.getElementById('tree');
 const song = document.getElementById('song');
-const energySystem = initEnergySystem({
+const energySystem = new EnergySystem({
     maxEnergy: 100,
-    drainRate: 5,
-    regenRate: 2,
+    drainRate: 10,
+    regenRate: 5,
     energyBarSelector: '#energyBar'
 });
 
@@ -57,7 +57,7 @@ requestBtn.addEventListener('click', async () => {
   snowInterval = setInterval(() => {
     createSnowflake();
   }, 200);
-  song.play();
+  //song.play();
 
 });
 function createSnowflake() {
@@ -76,60 +76,6 @@ function createSnowflake() {
       snowflake.remove();
     }, 3000);
   }
-  function initEnergySystem({
-    maxEnergy = 100,
-    drainRate = 5,
-    regenRate = 2,
-    energyBarSelector = '#energyBar'
-} = {}) {
-
-    let currentEnergy = maxEnergy;
-    let isDraining = false; 
-
-    const energyBar = document.querySelector(energyBarSelector);
-    if (!energyBar) {
-        console.error('Не знайдено елемент для відображення енергії за вказаним селектором.');
-        return;
-    }
-
-    function updateEnergyBar() {
-        let percent = (currentEnergy / maxEnergy) * 100;
-        energyBar.style.width = percent + '%';
-    }
-
-    function update() {
-        if (isDraining) {
-            currentEnergy -= (drainRate * 0.1);
-            if (currentEnergy < 0) currentEnergy = 0;
-        } else {
-            currentEnergy += (regenRate * 0.1);
-            if (currentEnergy > maxEnergy) currentEnergy = maxEnergy;
-        }
-        updateEnergyBar();
-    }
-
-    const intervalId = setInterval(update, 100);
-
-    return {
-        stop: () => clearInterval(intervalId),
-        setDrainMode: (mode) => {
-            // mode: true - draining, false - regenerating
-            isDraining = mode;
-        },
-        setRates: (newDrainRate, newRegenRate) => {
-            if (typeof newDrainRate === 'number') drainRate = newDrainRate;
-            if (typeof newRegenRate === 'number') regenRate = newRegenRate;
-        },
-        setMaxEnergy: (newMax) => {
-            if (typeof newMax === 'number' && newMax > 0) {
-                maxEnergy = newMax;
-                if (currentEnergy > maxEnergy) currentEnergy = maxEnergy;
-                updateEnergyBar();
-            }
-        },
-        getCurrentEnergy: () => currentEnergy
-    };
-}
   
 Telegram.WebApp.ready();
 
