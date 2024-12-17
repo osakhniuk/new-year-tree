@@ -3,133 +3,17 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Shake Detection with Delay</title>
-<style>
-  body {
-    font-family: sans-serif;
-    padding: 20px;
-  }
-  #status {
-    font-size: 24px;
-    font-weight: bold;
-  }
-  #request-btn {
-    padding: 10px 20px;
-    font-size: 18px;
-    margin-bottom: 20px;
-    cursor: pointer;
-  }
-  #debug {
-    margin-top: 20px;
-    font-size: 14px;
-    white-space: pre;
-    background: #f0f0f0;
-    padding: 10px;
-  }
-</style>
+<title>Shake Detection</title>
+<link rel="stylesheet" href="styles/style.css">
 </head>
 <body>
-  <h1>Shake Detection with Delay</h1>
+  <h1>Shake Detection</h1>
   <button id="request-btn">Надати доступ до акселерометра</button>
   <div id="status">Shaking: false</div>
   <div id="debug">Немає даних</div>
 
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script>
-    const SHAKE_THRESHOLD = 5; 
-    const SHAKE_HOLD_TIME = 1000; // Час в мілісекундах, протягом якого тримати true
-    let lastX = null;
-    let lastY = null;
-    let lastZ = null;
-    let isShaking = false;
-    let lastShakeTime = 0; // час останнього виявлення трясіння в мс
-
-    let statusElement = document.getElementById('status');
-    let requestBtn = document.getElementById('request-btn');
-    let debugElement = document.getElementById('debug');
-
-    function checkShake(ax, ay, az) {
-      if (lastX === null || lastY === null || lastZ === null) {
-        lastX = ax;
-        lastY = ay;
-        lastZ = az;
-        return false;
-      }
-
-      let deltaX = Math.abs(ax - lastX);
-      let deltaY = Math.abs(ay - lastY);
-      let deltaZ = Math.abs(az - lastZ);
-
-      lastX = ax;
-      lastY = ay;
-      lastZ = az;
-
-      let debugInfo = 
-        "x: " + ax.toFixed(2) + "\n" +
-        "y: " + ay.toFixed(2) + "\n" +
-        "z: " + az.toFixed(2) + "\n" +
-        "deltaX: " + deltaX.toFixed(2) + "\n" +
-        "deltaY: " + deltaY.toFixed(2) + "\n" +
-        "deltaZ: " + deltaZ.toFixed(2) + "\n" +
-        "isShaking (raw): " + ((deltaX > SHAKE_THRESHOLD || deltaY > SHAKE_THRESHOLD || deltaZ > SHAKE_THRESHOLD) ? "true" : "false");
-      debugElement.textContent = debugInfo;
-
-      return (deltaX > SHAKE_THRESHOLD || deltaY > SHAKE_THRESHOLD || deltaZ > SHAKE_THRESHOLD);
-    }
-
-    function startListeningMotion() {
-      window.addEventListener('devicemotion', (event) => {
-        let acceleration = event.acceleration;
-        if (!acceleration || acceleration.x === null) {
-          acceleration = event.accelerationIncludingGravity;
-          if (!acceleration) {
-            debugElement.textContent = "Подія devicemotion надійшла, але дані відсутні.";
-            return;
-          }
-        }
-
-        let { x, y, z } = acceleration;
-        let rawShake = checkShake(x, y, z);
-
-        let currentTime = Date.now();
-        if (rawShake) {
-          // Зафіксували трясіння, оновлюємо час
-          lastShakeTime = currentTime;
-          isShaking = true;
-        } else {
-          // Якщо немає поточного трясіння, перевіряємо час останнього зафіксованого
-          if ((currentTime - lastShakeTime) > SHAKE_HOLD_TIME) {
-            isShaking = false;
-          }
-        }
-
-        statusElement.textContent = 'Shaking: ' + isShaking;
-      }, true);
-    }
-
-    requestBtn.addEventListener('click', async () => {
-      if (typeof DeviceMotionEvent !== 'undefined' 
-          && typeof DeviceMotionEvent.requestPermission === 'function') {
-        try {
-          const response = await DeviceMotionEvent.requestPermission();
-          if (response === 'granted') {
-            startListeningMotion();
-            requestBtn.style.display = 'none';
-          } else {
-            alert('Доступ до акселерометра не надано');
-          }
-        } catch (e) {
-          alert('Помилка при спробі отримати доступ до акселерометра: ' + e);
-        }
-      } else {
-        // Якщо requestPermission не підтримується
-        startListeningMotion();
-        requestBtn.style.display = 'none';
-      }
-    });
-
-    // Ініціалізація Telegram WebApp
-    Telegram.WebApp.ready();
-  </script>
+  <script src="scripts/detectShake.js"></script>
+  <script src="scripts/main.js"></script>
 </body>
 </html>

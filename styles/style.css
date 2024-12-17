@@ -1,0 +1,23 @@
+body {
+    font-family: sans-serif;
+    padding: 20px;
+  }
+  #status {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 20px;
+  }
+  #request-btn {
+    padding: 10px 20px;
+    font-size: 18px;
+    margin-bottom: 20px;
+    cursor: pointer;
+  }
+  #debug {
+    margin-top: 20px;
+    font-size: 14px;
+    white-space: pre;
+    background: #f0f0f0;
+    padding: 10px;
+  }
+  
