@@ -21,9 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const shakeStatusEl = document.getElementById('shakeStatus');
     const THRESHOLD = 5;
-    const requestBtn = document.getElementById('requestBtn');
+    const  requestBtn = document.getElementById('requestBtn');
     let isShaking = false;
-    startButton.addEventListener("click", async () => {
+    requestBtn.addEventListener("click", async () => {
         await DeviceMotionEvent.requestPermission();
     });
    function updateShakeStatus(newState) {
