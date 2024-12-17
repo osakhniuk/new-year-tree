@@ -1,6 +1,6 @@
-const statusElement = document.getElementById('status');
+
 const requestBtn = document.getElementById('request-btn');
-const debugElement = document.getElementById('debug');
+const tree = document.getElementById('tree');
 
 function startListeningMotion() {
   window.addEventListener('devicemotion', (event) => {
@@ -17,17 +17,11 @@ function startListeningMotion() {
     const { x, y, z } = acceleration;
     const shaking = isDeviceShaking(x, y, z);
 
-    // Оновлюємо debug інформацію (поточні значення та стан)
-    debugElement.textContent = 
-      `x: ${x.toFixed(2)}\n` +
-      `y: ${y.toFixed(2)}\n` +
-      `z: ${z.toFixed(2)}\n` +
-      `Shaking: ${shaking}`;
-
-    // Відображаємо результат на екрані
-    statusElement.textContent = 'Shaking: ' + shaking;
     if (shaking == true){
-        Telegram.WebApp.HapticFeedback.impactOccurred('heavy');
+        Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+        tree.classList.add('shake');
+    } else {
+        tree.classList.remove('shake');
     }
   }, true);
 }
@@ -54,3 +48,4 @@ requestBtn.addEventListener('click', async () => {
 });
 
 Telegram.WebApp.ready();
+

@@ -2,22 +2,50 @@ body {
     font-family: sans-serif;
     padding: 20px;
   }
-  #status {
-    font-size: 24px;
-    font-weight: bold;
-    margin-top: 20px;
-  }
   #request-btn {
     padding: 10px 20px;
     font-size: 18px;
     margin-bottom: 20px;
     cursor: pointer;
   }
-  #debug {
-    margin-top: 20px;
-    font-size: 14px;
-    white-space: pre;
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
     background: #f0f0f0;
-    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
   }
+  
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* Контейнер для ялинки */
+  .tree-container {
+    width: 150px;
+    height: 150px;
+    position: relative;
+  }
+  
+  /* Стан тряски ялинки (анімація) */
+  .shake {
+    animation: shake 0.5s linear infinite;
+  }
+  
+  /* Визначаємо ключові кадри анімації тряски */
+  @keyframes shake {
+    0% { transform: rotate(0deg); }
+    20% { transform: rotate(-5deg); }
+    40% { transform: rotate(5deg); }
+    60% { transform: rotate(-5deg); }
+    80% { transform: rotate(5deg); }
+    100% { transform: rotate(0deg); }
+  }
+  
   

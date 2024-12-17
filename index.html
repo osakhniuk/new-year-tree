@@ -8,10 +8,15 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-  <h1>Shake Detection</h1>
-  <button id="request-btn">Надати доступ до акселерометра</button>
-  <div id="status">Shaking: false</div>
-  <div id="debug">Немає даних</div>
+    <div class="container">
+        <!-- Кнопка для запуску анімації -->
+        <button id="request-btn">GO</button>
+        
+        <!-- Зображення ялинки -->
+        <div class="tree-container">
+          <img id="tree" src="./tree.svg" alt="Ялинка" />
+        </div>
+      </div>
 
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="scripts/detectShake.js"></script>
