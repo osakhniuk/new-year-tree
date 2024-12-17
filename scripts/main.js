@@ -8,7 +8,7 @@ const energySystem = new EnergySystem({
     regenRate: 3,
     energyBarSelector: '#energyBar'
 });
- const incrementer = new RandomIncrementer(0.00, document.getElementById('valueField'));
+const incrementer = new RandomIncrementer(0.00, document.getElementById('valueField'));
 
 
 function startListeningMotion() {
@@ -22,7 +22,7 @@ function startListeningMotion() {
         return;
       }
     }
-    const incrementer = new RandomIncrementer(0.00, document.getElementById('valueField'));
+    
     const { x, y, z } = acceleration;
     const shaking = isDeviceShaking(x, y, z);
 
@@ -30,7 +30,10 @@ function startListeningMotion() {
         Telegram.WebApp.HapticFeedback.impactOccurred('medium');
         tree.classList.add('shake');
         energySystem.setDrainMode(true);
-        incrementer.startIncrementing();
+        if (incrementer.startIncrementing()){
+            alert("working")
+        };
+
     } else {
         tree.classList.remove('shake');
         energySystem.setDrainMode(false);
