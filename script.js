@@ -33,4 +33,31 @@ document.addEventListener('DOMContentLoaded', () => {
           console.log("Gyroscope permission not required.");
         }
       });
+
+      function initGyroscope() {
+
+        window.addEventListener("devicemotion", (event) => {
+          const { x, y, z } = event.accelerationIncludingGravity || {};
+          const threshold = 5; // Порогове значення для трясіння
+    
+          if (y !== null) {
+            const deltaY = lastY !== null ? Math.abs(y - lastY) : 0;
+    
+            // Виявлення трясіння
+            if (deltaY > threshold) {
+              shaking = true;
+    
+              // Викликаємо вібрацію через Telegram API
+              if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.HapticFeedback.impactOccurred("medium");
+              }
+            } else {
+              shaking = false;
+            }
+    
+            lastY = y;
+    
+          }
+        });
+      }
 });
