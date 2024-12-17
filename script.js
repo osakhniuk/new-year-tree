@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (typeof DeviceMotionEvent.requestPermission === "function") {
           try {
             const permissionState = await DeviceMotionEvent.requestPermission();
-            initGyroscope()
           } catch (error) {
             alert("Error while requesting gyroscope permission.");
           }
@@ -35,30 +34,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
-      function initGyroscope() {
-
-        window.addEventListener("devicemotion", (event) => {
-          const { x, y, z } = event.accelerationIncludingGravity || {};
-          const threshold = 5; // Порогове значення для трясіння
+      function initShakeDetection() {
+        let shaking = false;
+        let lastShakeTime = 0;
+        const shakeThreshold = 15; // Поріг чутливості. Можна налаштувати.
+        const shakeTimeout = 500;  // Час (мс), протягом якого пристрій вважається таким, що трясуть.
     
-          if (y !== null) {
-            const deltaY = lastY !== null ? Math.abs(y - lastY) : 0;
+        // Встановлюємо обробник події devicemotion
+        window.addEventListener('devicemotion', (event) => {
+            const acc = event.accelerationIncludingGravity;
+            if (!acc) return;
     
-            // Виявлення трясіння
-            if (deltaY > threshold) {
-              shaking = true;
-    
-              // Викликаємо вібрацію через Telegram API
-              if (window.Telegram && window.Telegram.WebApp) {
-                window.Telegram.WebApp.HapticFeedback.impactOccurred("medium");
-              }
-            } else {
-              shaking = false;
+            const totalAcceleration = Math.sqrt(
+                (acc.x * acc.x) +
+                (acc.y * acc.y) +
+                (acc.z * acc.z)
+            );
+            
+            // Якщо прискорення перевищує поріг, оновлюємо час останньої тряски
+            if (totalAcceleration > shakeThreshold) {
+                lastShakeTime = Date.now();
             }
     
-            lastY = y;
-    
-          }
+            // Якщо від останньої тряски пройшло менше shakeTimeout, вважаємо, що досі трясуть
+            shaking = (Date.now() - lastShakeTime < shakeTimeout);
         });
-      }
+    
+        // Повертаємо функцію, яка при виклику покаже поточний стан тряски.
+        return function isShaking() {
+            return shaking;
+        };
+    }
+    document.getElementById('shakeStatus').textContent(initShakeDetection());
 });
