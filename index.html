@@ -13,64 +13,85 @@
     font-size: 24px;
     font-weight: bold;
   }
+  #request-btn {
+    padding: 10px 20px;
+    font-size: 18px;
+    margin-bottom: 20px;
+    cursor: pointer;
+  }
 </style>
 </head>
 <body>
   <h1>Shake Detection in Telegram Mini App</h1>
+  <button id="request-btn">Надати доступ до акселерометра</button>
   <div id="status">Shaking: false</div>
 
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
-    // Поріг, при перевищенні якого вважаємо, що пристрій труситься
     const SHAKE_THRESHOLD = 15;
-
     let lastX = null;
     let lastY = null;
     let lastZ = null;
     let isShaking = false;
     let statusElement = document.getElementById('status');
+    let requestBtn = document.getElementById('request-btn');
 
     function checkShake(ax, ay, az) {
       if (lastX === null || lastY === null || lastZ === null) {
-        // Якщо це перше вимірювання - просто запам'ятовуємо його
         lastX = ax;
         lastY = ay;
         lastZ = az;
         return false;
       }
 
-      // Обчислюємо різницю між поточними та минулими значеннями
       let deltaX = Math.abs(ax - lastX);
       let deltaY = Math.abs(ay - lastY);
       let deltaZ = Math.abs(az - lastZ);
 
-      // Запам'ятовуємо нові значення для наступного обчислення
       lastX = ax;
       lastY = ay;
       lastZ = az;
 
-      // Перевірка чи перевищили ми поріг по якійсь осі
-      if (deltaX > SHAKE_THRESHOLD || deltaY > SHAKE_THRESHOLD || deltaZ > SHAKE_THRESHOLD) {
-        return true;
-      } else {
-        return false;
-      }
+      return (deltaX > SHAKE_THRESHOLD || deltaY > SHAKE_THRESHOLD || deltaZ > SHAKE_THRESHOLD);
     }
 
-    // Слухаємо події руху пристрою
-    window.addEventListener('devicemotion', (event) => {
-      let acceleration = event.accelerationIncludingGravity;
-      if (!acceleration) return; 
+    function startListeningMotion() {
+      window.addEventListener('devicemotion', (event) => {
+        let acceleration = event.accelerationIncludingGravity;
+        if (!acceleration) return; 
       
-      let { x, y, z } = acceleration;
+        let { x, y, z } = acceleration;
 
-      isShaking = checkShake(x, y, z);
-      statusElement.textContent = 'Shaking: ' + isShaking;
-    }, true);
+        isShaking = checkShake(x, y, z);
+        statusElement.textContent = 'Shaking: ' + isShaking;
+      }, true);
+    }
 
-    // Опціонально можна використовувати Telegram WebApp API для інтеграції з Mini App
+    // Запитуємо дозвіл при кліку на кнопку
+    requestBtn.addEventListener('click', async () => {
+      if (typeof DeviceMotionEvent !== 'undefined' 
+          && typeof DeviceMotionEvent.requestPermission === 'function') {
+        try {
+          const response = await DeviceMotionEvent.requestPermission();
+          if (response === 'granted') {
+            startListeningMotion();
+            requestBtn.style.display = 'none';
+          } else {
+            alert('Доступ до акселерометра не надано');
+          }
+        } catch (e) {
+          console.error(e);
+          alert('Помилка при спробі отримати доступ до акселерометра');
+        }
+      } else {
+        // Якщо requestPermission не підтримується, просто слухаємо подію одразу (наприклад, на Android)
+        startListeningMotion();
+        requestBtn.style.display = 'none';
+      }
+    });
+
+    // Ініціалізація Telegram WebApp
     Telegram.WebApp.ready();
-    // При потребі, можна викликати Telegram.WebApp.sendData(...) для відправки даних боту або виконувати інші інтеграції
   </script>
 </body>
 </html>
