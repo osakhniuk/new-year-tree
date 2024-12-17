@@ -19,22 +19,32 @@
     margin-bottom: 20px;
     cursor: pointer;
   }
+  #debug {
+    margin-top: 20px;
+    font-size: 14px;
+    white-space: pre;
+    background: #f0f0f0;
+    padding: 10px;
+  }
 </style>
 </head>
 <body>
   <h1>Shake Detection in Telegram Mini App</h1>
   <button id="request-btn">Надати доступ до акселерометра</button>
   <div id="status">Shaking: false</div>
+  <div id="debug">Немає даних</div>
 
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
-    const SHAKE_THRESHOLD = 15;
+    const SHAKE_THRESHOLD = 5; // Знижуємо поріг для більшої чутливості
     let lastX = null;
     let lastY = null;
     let lastZ = null;
     let isShaking = false;
+
     let statusElement = document.getElementById('status');
     let requestBtn = document.getElementById('request-btn');
+    let debugElement = document.getElementById('debug');
 
     function checkShake(ax, ay, az) {
       if (lastX === null || lastY === null || lastZ === null) {
@@ -48,26 +58,43 @@
       let deltaY = Math.abs(ay - lastY);
       let deltaZ = Math.abs(az - lastZ);
 
+      // Запам'ятовуємо нові значення
       lastX = ax;
       lastY = ay;
       lastZ = az;
+
+      // Дебажна інформація
+      let debugInfo = 
+        "x: " + ax.toFixed(2) + "\n" +
+        "y: " + ay.toFixed(2) + "\n" +
+        "z: " + az.toFixed(2) + "\n" +
+        "deltaX: " + deltaX.toFixed(2) + "\n" +
+        "deltaY: " + deltaY.toFixed(2) + "\n" +
+        "deltaZ: " + deltaZ.toFixed(2) + "\n";
+
+      debugElement.textContent = debugInfo;
 
       return (deltaX > SHAKE_THRESHOLD || deltaY > SHAKE_THRESHOLD || deltaZ > SHAKE_THRESHOLD);
     }
 
     function startListeningMotion() {
       window.addEventListener('devicemotion', (event) => {
-        let acceleration = event.accelerationIncludingGravity;
-        if (!acceleration) return; 
-      
-        let { x, y, z } = acceleration;
+        let acceleration = event.acceleration;
+        if (!acceleration || acceleration.x === null) {
+          // fallback якщо acceleration недоступне
+          acceleration = event.accelerationIncludingGravity;
+          if (!acceleration) {
+            debugElement.textContent = "Подія devicemotion надійшла, але дані відсутні.";
+            return;
+          }
+        }
 
+        let { x, y, z } = acceleration;
         isShaking = checkShake(x, y, z);
         statusElement.textContent = 'Shaking: ' + isShaking;
       }, true);
     }
 
-    // Запитуємо дозвіл при кліку на кнопку
     requestBtn.addEventListener('click', async () => {
       if (typeof DeviceMotionEvent !== 'undefined' 
           && typeof DeviceMotionEvent.requestPermission === 'function') {
@@ -80,11 +107,10 @@
             alert('Доступ до акселерометра не надано');
           }
         } catch (e) {
-          console.error(e);
-          alert('Помилка при спробі отримати доступ до акселерометра');
+          alert('Помилка при спробі отримати доступ до акселерометра: ' + e);
         }
       } else {
-        // Якщо requestPermission не підтримується, просто слухаємо подію одразу (наприклад, на Android)
+        // Якщо requestPermission не підтримується
         startListeningMotion();
         requestBtn.style.display = 'none';
       }
