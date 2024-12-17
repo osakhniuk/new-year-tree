@@ -17,15 +17,11 @@ function startListeningMotion() {
     const { x, y, z } = acceleration;
     const shaking = isDeviceShaking(x, y, z);
 
-    // Оновлюємо debug інформацію (поточні значення та стан)
-    debugElement.textContent = 
-      `x: ${x.toFixed(2)}\n` +
-      `y: ${y.toFixed(2)}\n` +
-      `z: ${z.toFixed(2)}\n` +
-      `Shaking: ${shaking}`;
+   if (shaking = true){
+    Telegram.WebApp.HapticFeedback.impactOccurred('heavy');
+   }
+    
 
-    // Відображаємо результат на екрані
-    statusElement.textContent = 'Shaking: ' + shaking;
   }, true);
 }
 
