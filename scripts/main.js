@@ -21,8 +21,10 @@ function startListeningMotion() {
     if (shaking == true){
         Telegram.WebApp.HapticFeedback.impactOccurred('medium');
         tree.classList.add('shake');
+        song.play();
     } else {
         tree.classList.remove('shake');
+        song.pause();
     }
   }, true);
 }
