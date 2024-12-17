@@ -51,7 +51,7 @@ requestBtn.addEventListener('click', async () => {
   snowInterval = setInterval(() => {
     createSnowflake();
   }, 200);
-  song.play();
+
 });
 function createSnowflake() {
     const snowflake = document.createElement('div');
