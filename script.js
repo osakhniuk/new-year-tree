@@ -22,10 +22,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const shakeStatusEl = document.getElementById('shakeStatus');
     const THRESHOLD = 5;
     const requestBtn = document.getElementById('requestBtn');
-
     let isShaking = false;
-
-    function updateShakeStatus(newState) {
+    startButton.addEventListener("click", async () => {
+        await DeviceMotionEvent.requestPermission();
+    });
+   function updateShakeStatus(newState) {
         if (newState && !isShaking) {
             isShaking = true;
             shakeStatusEl.textContent = "є тряска";
@@ -34,23 +35,26 @@ document.addEventListener('DOMContentLoaded', () => {
             shakeStatusEl.textContent = "немає тряски";
         }
     }
+
+    // Обробник даних акселерометра
     function onAccelerometerChanged(data) {
         const { x } = data;
-        // Перевірка чи перевищене значення по осі X
         const shaking = Math.abs(x) > THRESHOLD;
         updateShakeStatus(shaking);
     }
 
-    requestBtn.addEventListener('click', () => {
+    // Кнопка для запиту доступу до акселерометра
+    startBtn.addEventListener('click', () => {
+        // Запускаємо акселерометр за допомогою Telegram API
         tg.Accelerometer.start().then(() => {
-            console.log('Accelerometer permission granted and started.');
-            // Тепер ми можемо почати слухати події акселерометра
+            console.log('Accelerometer started successfully');
+            // Слухаємо подію зміни
             tg.onEvent('accelerometerChanged', onAccelerometerChanged);
-            requestBtn.disabled = true;
-            requestBtn.textContent = "Доступ надано";
+            startBtn.disabled = true; // Вимикаємо кнопку після успішного запуску
+            startBtn.textContent = "Акселерометр увімкнено";
         }).catch(err => {
             console.error('Failed to start accelerometer:', err);
-            alert('Не вдалося отримати доступ до акселерометра. Перевірте налаштування або доступ.');
+            alert('Не вдалося отримати доступ до акселерометра.');
         });
     });
 });
