@@ -45,6 +45,26 @@ requestBtn.addEventListener('click', async () => {
     startListeningMotion();
     requestBtn.style.display = 'none';
   }
+  snowInterval = setInterval(() => {
+    createSnowflake();
+  }, 200);
+  
+  function createSnowflake() {
+    const snowflake = document.createElement('div');
+    snowflake.classList.add('snowflake');
+    snowflake.textContent = '❄';
+
+    // Випадкова позиція сніжинки по осі X
+    const startX = Math.random() * window.innerWidth;
+    snowflake.style.left = `${startX}px`;
+
+    snowContainer.appendChild(snowflake);
+
+    // Видаляємо сніжинку після завершення анімації
+    setTimeout(() => {
+      snowflake.remove();
+    }, 3000);
+  }
 });
 
 Telegram.WebApp.ready();
