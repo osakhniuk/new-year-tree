@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Shake Detection</title>
+<title>Shake Detection with Delay</title>
 <style>
   body {
     font-family: sans-serif;
@@ -29,18 +29,20 @@
 </style>
 </head>
 <body>
-  <h1>Shake Detection in Telegram Mini App</h1>
+  <h1>Shake Detection with Delay</h1>
   <button id="request-btn">Надати доступ до акселерометра</button>
   <div id="status">Shaking: false</div>
   <div id="debug">Немає даних</div>
 
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
-    const SHAKE_THRESHOLD = 5; // Знижуємо поріг для більшої чутливості
+    const SHAKE_THRESHOLD = 5; 
+    const SHAKE_HOLD_TIME = 1000; // Час в мілісекундах, протягом якого тримати true
     let lastX = null;
     let lastY = null;
     let lastZ = null;
     let isShaking = false;
+    let lastShakeTime = 0; // час останнього виявлення трясіння в мс
 
     let statusElement = document.getElementById('status');
     let requestBtn = document.getElementById('request-btn');
@@ -58,20 +60,18 @@
       let deltaY = Math.abs(ay - lastY);
       let deltaZ = Math.abs(az - lastZ);
 
-      // Запам'ятовуємо нові значення
       lastX = ax;
       lastY = ay;
       lastZ = az;
 
-      // Дебажна інформація
       let debugInfo = 
         "x: " + ax.toFixed(2) + "\n" +
         "y: " + ay.toFixed(2) + "\n" +
         "z: " + az.toFixed(2) + "\n" +
         "deltaX: " + deltaX.toFixed(2) + "\n" +
         "deltaY: " + deltaY.toFixed(2) + "\n" +
-        "deltaZ: " + deltaZ.toFixed(2) + "\n";
-
+        "deltaZ: " + deltaZ.toFixed(2) + "\n" +
+        "isShaking (raw): " + ((deltaX > SHAKE_THRESHOLD || deltaY > SHAKE_THRESHOLD || deltaZ > SHAKE_THRESHOLD) ? "true" : "false");
       debugElement.textContent = debugInfo;
 
       return (deltaX > SHAKE_THRESHOLD || deltaY > SHAKE_THRESHOLD || deltaZ > SHAKE_THRESHOLD);
@@ -81,7 +81,6 @@
       window.addEventListener('devicemotion', (event) => {
         let acceleration = event.acceleration;
         if (!acceleration || acceleration.x === null) {
-          // fallback якщо acceleration недоступне
           acceleration = event.accelerationIncludingGravity;
           if (!acceleration) {
             debugElement.textContent = "Подія devicemotion надійшла, але дані відсутні.";
@@ -90,7 +89,20 @@
         }
 
         let { x, y, z } = acceleration;
-        isShaking = checkShake(x, y, z);
+        let rawShake = checkShake(x, y, z);
+
+        let currentTime = Date.now();
+        if (rawShake) {
+          // Зафіксували трясіння, оновлюємо час
+          lastShakeTime = currentTime;
+          isShaking = true;
+        } else {
+          // Якщо немає поточного трясіння, перевіряємо час останнього зафіксованого
+          if ((currentTime - lastShakeTime) > SHAKE_HOLD_TIME) {
+            isShaking = false;
+          }
+        }
+
         statusElement.textContent = 'Shaking: ' + isShaking;
       }, true);
     }
