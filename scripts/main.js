@@ -8,9 +8,9 @@ const energySystem = new EnergySystem({
     regenRate: 3,
     energyBarSelector: '#energyBar'
 });
-const test = document.getElementById('test');
+//const test = document.getElementById('test');
 const incrementer = new RandomIncrementer(0.00, document.getElementById('valueField'));
-incrementer.startIncrementing();
+
 
 function startListeningMotion() {
   window.addEventListener('devicemotion', (event) => {
@@ -31,12 +31,12 @@ function startListeningMotion() {
         Telegram.WebApp.HapticFeedback.impactOccurred('medium');
         tree.classList.add('shake');
         energySystem.setDrainMode(true);
-        //incrementer.startIncrementing();
+        incrementer.setIncrement(true);
 
     } else {
         tree.classList.remove('shake');
         energySystem.setDrainMode(false);
-        //incrementer.stopIncrementing();
+        incrementer.setIncrement(false);
     }
   }, true);
 }
@@ -82,7 +82,7 @@ function createSnowflake() {
       snowflake.remove();
     }, 3000);
   }
-test.textContent = incrementer.getLastIncrement();
+
   
 Telegram.WebApp.ready();
 

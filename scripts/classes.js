@@ -67,74 +67,89 @@ class EnergySystem {
 }
 
 class RandomIncrementer {
-    constructor(initialValue, element) {
-      this.currentValue = initialValue;
-      this.element = element;
-      this.intervalId = null;
-      this.lastIncrement = 0.00; // зберігаємо останнє додане значення
-  
-      this.updateElement(); 
+    constructor(initialValue = 0, element) {
+        this.currentValue = initialValue;
+        this.element = element;
+        this.isIncrementing = false;
+        
+        // Перевірка, чи елемент існує
+        if (!this.element) {
+            console.error('Не знайдено елемент для відображення значення.');
+            return;
+        }
+
+        // Оновлюємо початкове значення в DOM
+        this.updateElement();
+
+        // Запускаємо інтервал оновлення раз на секунду (можна змінити частоту за потреби)
+        this.intervalId = setInterval(() => this.update(), 1000);
     }
-  
-    startIncrementing() {
-      if (!this.intervalId) {
-        this.intervalId = setInterval(() => {
-          const inc = this._getRandomIncrement();
-          this.lastIncrement = inc; // оновлюємо останній інкремент
-          this.currentValue += inc;
-          this.currentValue = Math.round(this.currentValue * 100) / 100; 
-          this.updateElement();
-        }, 1000);
-      }
-    }
-  
-    stopIncrementing() {
-      if (this.intervalId) {
-        clearInterval(this.intervalId);
-        this.intervalId = null;
-      }
-    }
-  
-    // Метод для отримання останнього доданого значення
-    getLastIncrement() {
-      return this.lastIncrement;
-    }
-  
+
     updateElement() {
-      if (this.element) {
-        this.element.textContent = this.currentValue.toFixed(2);
-      }
+        if (this.element.tagName.toLowerCase() === 'input') {
+            // Якщо це input, оновлюємо value
+            this.element.value = this.currentValue.toFixed(2);
+        } else {
+            // Якщо інший елемент, оновлюємо текст
+            this.element.textContent = this.currentValue.toFixed(2);
+        }
     }
-  
+
+    update() {
+        if (this.isIncrementing) {
+            const inc = this._getRandomIncrement();
+            this.currentValue += inc;
+            // Округлення до сотих
+            this.currentValue = Math.round(this.currentValue * 100) / 100;
+            this.updateElement();
+        }
+    }
+
+    // Метод, що задає режим інкрементування
+    setIncrement(mode) {
+        this.isIncrementing = mode;
+    }
+
+    // Зупиняє оновлення, якщо потрібно
+    stop() {
+        if (this.intervalId) {
+            clearInterval(this.intervalId);
+            this.intervalId = null;
+        }
+    }
+
+    getCurrentValue() {
+        return this.currentValue;
+    }
+
     _getRandomIncrement() {
-      const r = Math.random();
-      let increment = 0.0;
-  
-      if (r < 0.20) {
-        increment = this._randomInRange(0.01, 0.5);
-      } else if (r < 0.50) {
-        increment = this._randomInRange(0.51, 1.0);
-      } else if (r < 0.70) {
-        increment = this._randomInRange(1.01, 2.0);
-      } else if (r < 0.85) {
-        increment = this._randomInRange(2.01, 3.0);
-      } else if (r < 0.95) {
-        increment = this._randomInRange(3.01, 4.0);
-      } else if (r < 0.96) {
-        increment = this._randomInRange(4.01, 5.0);
-      } else if (r < 0.965) {
-        increment = this._randomInRange(5.01, 9.99);
-      } else if (r < 0.966) {
-        increment = 10.0;
-      } else {
-        increment = 0.0;
-      }
-  
-      return Math.round(increment * 100) / 100;
+        const r = Math.random();
+        let increment = 0.0;
+
+        if (r < 0.20) {
+          increment = this._randomInRange(0.01, 0.5);
+        } else if (r < 0.50) {
+          increment = this._randomInRange(0.51, 1.0);
+        } else if (r < 0.70) {
+          increment = this._randomInRange(1.01, 2.0);
+        } else if (r < 0.85) {
+          increment = this._randomInRange(2.01, 3.0);
+        } else if (r < 0.95) {
+          increment = this._randomInRange(3.01, 4.0);
+        } else if (r < 0.96) {
+          increment = this._randomInRange(4.01, 5.0);
+        } else if (r < 0.965) {
+          increment = this._randomInRange(5.01, 9.99);
+        } else if (r < 0.966) {
+          increment = 10.0;
+        } else {
+          increment = 0.0;
+        }
+
+        return Math.round(increment * 100) / 100;
     }
-  
+
     _randomInRange(min, max) {
-      return Math.random() * (max - min) + min;
+        return Math.random() * (max - min) + min;
     }
-  }
-  
+}
