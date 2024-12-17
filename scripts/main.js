@@ -8,6 +8,7 @@ const energySystem = new EnergySystem({
     regenRate: 3,
     energyBarSelector: '#energyBar'
 });
+const test = document.getElementById('test');
 const incrementer = new RandomIncrementer(0.00, document.getElementById('valueField'));
 
 
@@ -81,6 +82,7 @@ function createSnowflake() {
       snowflake.remove();
     }, 3000);
   }
+test.textContent = incrementer.getLastIncrement();
   
 Telegram.WebApp.ready();
 

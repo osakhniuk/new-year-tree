@@ -71,16 +71,18 @@ class RandomIncrementer {
       this.currentValue = initialValue;
       this.element = element;
       this.intervalId = null;
+      this.lastIncrement = 0.00; // зберігаємо останнє додане значення
   
-      this.updateElement(); // Встановлюємо початкове значення в DOM
+      this.updateElement(); 
     }
   
     startIncrementing() {
       if (!this.intervalId) {
         this.intervalId = setInterval(() => {
           const inc = this._getRandomIncrement();
+          this.lastIncrement = inc; // оновлюємо останній інкремент
           this.currentValue += inc;
-          this.currentValue = Math.round(this.currentValue * 100) / 100; // округлення до сотих
+          this.currentValue = Math.round(this.currentValue * 100) / 100; 
           this.updateElement();
         }, 1000);
       }
@@ -91,6 +93,11 @@ class RandomIncrementer {
         clearInterval(this.intervalId);
         this.intervalId = null;
       }
+    }
+  
+    // Метод для отримання останнього доданого значення
+    getLastIncrement() {
+      return this.lastIncrement;
     }
   
     updateElement() {
