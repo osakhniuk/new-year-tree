@@ -1,0 +1,28 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background: #f0f0f0;
+}
+
+.my-tree {
+    cursor: pointer;
+    width: 200px; /* Розмір можна змінити за потреби */
+}
+
+/* Клас для анімації "тряски" */
+.shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+/* Ключові кадри для анімації */
+@keyframes shake {
+    0% { transform: rotate(0deg); }
+    20% { transform: rotate(-5deg); }
+    40% { transform: rotate(5deg); }
+    60% { transform: rotate(-5deg); }
+    80% { transform: rotate(5deg); }
+    100% { transform: rotate(0deg); }
+}
