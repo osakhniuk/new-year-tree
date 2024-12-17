@@ -26,6 +26,9 @@ function startListeningMotion() {
 
     // Відображаємо результат на екрані
     statusElement.textContent = 'Shaking: ' + shaking;
+    if (shaking == true){
+        Telegram.WebApp.HapticFeedback.impactOccurred('heavy');
+    }
   }, true);
 }
 
