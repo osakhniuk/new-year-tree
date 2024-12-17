@@ -95,4 +95,16 @@ html, body {
       opacity: 0;
     }
   }
-  
+  .energy-container {
+    width: 300px;
+    height: 30px;
+    background-color: #ccc;
+    border: 1px solid #999;
+    position: relative;
+}
+.energy-bar {
+    height: 100%;
+    background-color: green;
+    width: 100%; /* Спочатку повна енергія */
+    transition: width 0.1s linear;
+}  
