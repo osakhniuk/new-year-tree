@@ -30,9 +30,7 @@ function startListeningMotion() {
         Telegram.WebApp.HapticFeedback.impactOccurred('medium');
         tree.classList.add('shake');
         energySystem.setDrainMode(true);
-        if (incrementer.startIncrementing()){
-            alert("working")
-        };
+        incrementer.startIncrementing();
 
     } else {
         tree.classList.remove('shake');

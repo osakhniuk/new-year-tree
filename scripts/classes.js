@@ -84,7 +84,6 @@ class RandomIncrementer {
           this.updateElement();
         }, 1000);
       }
-      return true;
     }
   
     stopIncrementing() {
