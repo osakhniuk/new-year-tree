@@ -8,8 +8,7 @@ const energySystem = new EnergySystem({
     regenRate: 3,
     energyBarSelector: '#energyBar'
 });
-const element = document.getElementById('valueField');
-const incrementer = new RandomIncrementer(0.00, element);
+
 
 function startListeningMotion() {
   window.addEventListener('devicemotion', (event) => {
@@ -25,6 +24,8 @@ function startListeningMotion() {
 
     const { x, y, z } = acceleration;
     const shaking = isDeviceShaking(x, y, z);
+    const element = document.getElementById('valueField');
+    const incrementer = new RandomIncrementer(0.00, element);
 
     if (shaking == true){
         Telegram.WebApp.HapticFeedback.impactOccurred('medium');
