@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
           try {
             const permissionState = await DeviceMotionEvent.requestPermission();
             if (permissionState === "granted") {
-                initGyroscope();
+                //initGyroscope();
             } else {
               alert("Permission to access gyroscope was denied.");
             }
@@ -39,8 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
           startGame();
         }
       });
-      function initGyroscope() {
-
+    function initGyroscope() {
         window.addEventListener("devicemotion", (event) => {
           const { x, y, z } = event.accelerationIncludingGravity || {};
           const threshold = 5; // Порогове значення для трясіння
