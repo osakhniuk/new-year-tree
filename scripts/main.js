@@ -4,10 +4,12 @@ const tree = document.getElementById('tree');
 const song = document.getElementById('song');
 const energySystem = new EnergySystem({
     maxEnergy: 100,
-    drainRate: 10,
-    regenRate: 5,
+    drainRate: 8,
+    regenRate: 3,
     energyBarSelector: '#energyBar'
 });
+const element = document.getElementById('valueField');
+const incrementer = new RandomIncrementer(0.00, element);
 
 function startListeningMotion() {
   window.addEventListener('devicemotion', (event) => {
@@ -28,9 +30,11 @@ function startListeningMotion() {
         Telegram.WebApp.HapticFeedback.impactOccurred('medium');
         tree.classList.add('shake');
         energySystem.setDrainMode(true);
+        incrementer.startIncrementing();
     } else {
         tree.classList.remove('shake');
         energySystem.setDrainMode(false);
+        incrementer.stopIncrementing();
     }
   }, true);
 }
