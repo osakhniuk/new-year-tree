@@ -48,8 +48,8 @@ requestBtn.addEventListener('click', async () => {
   snowInterval = setInterval(() => {
     createSnowflake();
   }, 200);
-  
-  function createSnowflake() {
+});
+function createSnowflake() {
     const snowflake = document.createElement('div');
     snowflake.classList.add('snowflake');
     snowflake.textContent = '❄';
@@ -65,7 +65,6 @@ requestBtn.addEventListener('click', async () => {
       snowflake.remove();
     }, 3000);
   }
-});
 
 Telegram.WebApp.ready();
 
