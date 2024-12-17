@@ -10,7 +10,7 @@ const energySystem = new EnergySystem({
 });
 const test = document.getElementById('test');
 const incrementer = new RandomIncrementer(0.00, document.getElementById('valueField'));
-
+incrementer.startIncrementing();
 
 function startListeningMotion() {
   window.addEventListener('devicemotion', (event) => {
@@ -31,12 +31,12 @@ function startListeningMotion() {
         Telegram.WebApp.HapticFeedback.impactOccurred('medium');
         tree.classList.add('shake');
         energySystem.setDrainMode(true);
-        incrementer.startIncrementing();
+        //incrementer.startIncrementing();
 
     } else {
         tree.classList.remove('shake');
         energySystem.setDrainMode(false);
-        incrementer.stopIncrementing();
+        //incrementer.stopIncrementing();
     }
   }, true);
 }
