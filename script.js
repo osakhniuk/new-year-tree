@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (typeof DeviceMotionEvent.requestPermission === "function") {
           try {
             const permissionState = await DeviceMotionEvent.requestPermission();
+            initGyroscope()
           } catch (error) {
             alert("Error while requesting gyroscope permission.");
           }
