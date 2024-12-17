@@ -18,6 +18,19 @@ document.addEventListener('DOMContentLoaded', () => {
         // Викликаємо тактильний імпульс
         tg.HapticFeedback.impactOccurred('medium');
     });
-      
-
+    
+    
+    const requestBtn = document.getElementById("requestBtn");
+    requestBtn.addEventListener("click", async () => {
+         // Запит дозволу на доступ до гіроскопа (для iOS)
+        if (typeof DeviceMotionEvent.requestPermission === "function") {
+          try {
+            const permissionState = await DeviceMotionEvent.requestPermission();
+          } catch (error) {
+            alert("Error while requesting gyroscope permission.");
+          }
+        } else {
+          console.log("Gyroscope permission not required.");
+        }
+      });
 });
