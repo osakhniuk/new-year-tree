@@ -1,5 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     const tree = document.querySelector('.my-tree');
+    const tg = window.Telegram.WebApp;
+    tg.MainButton.setText("Вібрувати");
+            tg.MainButton.show();
 
     tree.addEventListener('click', () => {
         // Додаємо клас для анімації
@@ -10,9 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
             tree.classList.remove('shake');
         }, { once: true });
     });
-    const vibrateBtn = document.getElementById('vibrateBtn');
-    vibrateBtn.addEventListener('click', () => {
-        Telegram.WebApp.HapticFeedback.impactOccurred('light');
+    tg.MainButton.onClick(() => {
+        // Викликаємо тактильний імпульс
+        tg.HapticFeedback.impactOccurred('medium');
     });
 
 });
