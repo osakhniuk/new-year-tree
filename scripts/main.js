@@ -24,12 +24,12 @@ function startListeningMotion() {
         return;
       }
     }
-    
+    test.textContent = energySystem.getCurrentEnergy();
     const { x, y, z } = acceleration;
     const shaking = isDeviceShaking(x, y, z);
 
     if (shaking == true){
-        test.textContent = energySystem.getCurrentEnergy();
+        
         Telegram.WebApp.HapticFeedback.impactOccurred('medium');
         tree.classList.add('shake');
         energySystem.setDrainMode(true);
