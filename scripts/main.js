@@ -42,12 +42,6 @@ function startListeningMotion() {
         energySystem.setDrainMode(false);
         incrementer.setIncrement(false);
     }
-    if (shaking == true && energySystem.getCurrentEnergy() <= (0.3 * energySystem.maxEnergy)){
-        for (let i = 0; i < 3; i++) {
-            Telegram.WebApp.HapticFeedback.impactOccurred('hard');
-            
-        }
-    }
   }, true);
 }
 
