@@ -107,4 +107,7 @@ html, body {
     background-color: green;
     width: 100%; /* Спочатку повна енергія */
     transition: width 0.1s linear;
+}
+.energy-bar.critical {
+    background-color: red;
 }  

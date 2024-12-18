@@ -4,8 +4,9 @@ const tree = document.getElementById('tree');
 const song = document.getElementById('song');
 const energySystem = new EnergySystem({
     maxEnergy: 100,
-    drainRate: 8,
-    regenRate: 3,
+    drainRate: 10,
+    regenRate: 5,
+    threshold: 30,
     energyBarSelector: '#energyBar'
 });
 //const test = document.getElementById('test');

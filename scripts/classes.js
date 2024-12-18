@@ -3,11 +3,13 @@ class EnergySystem {
         maxEnergy = 100, 
         drainRate = 5, 
         regenRate = 2, 
+        threshold = 30,
         energyBarSelector = '#energyBar' 
     } = {}) {
         this.maxEnergy = maxEnergy;
         this.drainRate = drainRate;
         this.regenRate = regenRate;
+        this.threshold = threshold;
         this.currentEnergy = maxEnergy;
         this.isDraining = false;
         this.energyBar = document.querySelector(energyBarSelector);
@@ -24,6 +26,12 @@ class EnergySystem {
     updateEnergyBar() {
         const percent = (this.currentEnergy / this.maxEnergy) * 100;
         this.energyBar.style.width = percent + '%';
+
+        if (this.currentEnergy <= this.threshold) {
+            this.energyBar.classList.add('critical');
+        } else {
+            this.energyBar.classList.remove('critical');
+        }
     }
 
     update() {
@@ -57,6 +65,13 @@ class EnergySystem {
         if (typeof newMax === 'number' && newMax > 0) {
             this.maxEnergy = newMax;
             if (this.currentEnergy > this.maxEnergy) this.currentEnergy = this.maxEnergy;
+            this.updateEnergyBar();
+        }
+    }
+
+    setThreshold(newThreshold) {
+        if (typeof newThreshold === 'number' && newThreshold >= 0) {
+            this.threshold = newThreshold;
             this.updateEnergyBar();
         }
     }
@@ -127,15 +142,15 @@ class RandomIncrementer {
         let increment = 0.0;
 
         if (r < 0.20) {
-          increment = this._randomInRange(0.01, 0.5);
+          increment = this._randomInRange(0.01, 0.1);
         } else if (r < 0.50) {
-          increment = this._randomInRange(0.51, 1.0);
+          increment = this._randomInRange(0.11, 0.2);
         } else if (r < 0.70) {
-          increment = this._randomInRange(1.01, 2.0);
+          increment = this._randomInRange(0.21, 0.3);
         } else if (r < 0.85) {
-          increment = this._randomInRange(2.01, 3.0);
+          increment = this._randomInRange(0.31, 0.49);
         } else if (r < 0.95) {
-          increment = this._randomInRange(3.01, 4.0);
+          increment = this._randomInRange(0.5, 0.62);
         } else if (r < 0.96) {
           increment = this._randomInRange(4.01, 5.0);
         } else if (r < 0.965) {
