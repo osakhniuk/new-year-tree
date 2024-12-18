@@ -9,7 +9,7 @@ const energySystem = new EnergySystem({
     threshold: 30,
     energyBarSelector: '#energyBar'
 });
-//const test = document.getElementById('test');
+const test = document.getElementById('test');
 const incrementer = new RandomIncrementer(0.00, document.getElementById('valueField'));
 
 
@@ -29,6 +29,7 @@ function startListeningMotion() {
     const shaking = isDeviceShaking(x, y, z);
 
     if (shaking == true){
+        test.textContent = energySystem.getCurrentEnergy();
         Telegram.WebApp.HapticFeedback.impactOccurred('medium');
         tree.classList.add('shake');
         energySystem.setDrainMode(true);
