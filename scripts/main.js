@@ -30,7 +30,7 @@ function startListeningMotion() {
     const { x, y, z } = acceleration;
     const shaking = isDeviceShaking(x, y, z);
 
-    if (shaking == true && energySystem.getCurrentEnergy() > (0.3 * energySystem.maxEnergy){
+    if (shaking == true && energySystem.getCurrentEnergy() > (0.3 * energySystem.maxEnergy)){
         
         Telegram.WebApp.HapticFeedback.impactOccurred('medium');
         tree.classList.add('shake');
@@ -41,6 +41,12 @@ function startListeningMotion() {
         tree.classList.remove('shake');
         energySystem.setDrainMode(false);
         incrementer.setIncrement(false);
+    }
+    if (shaking == true && energySystem.getCurrentEnergy() <= (0.3 * energySystem.maxEnergy)){
+        for (let i = 0; i < 3; i++) {
+            Telegram.WebApp.HapticFeedback.impactOccurred('hard');
+            
+        }
     }
   }, true);
 }
