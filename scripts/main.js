@@ -28,7 +28,7 @@ function startListeningMotion() {
     const { x, y, z } = acceleration;
     const shaking = isDeviceShaking(x, y, z);
 
-    if (shaking == true && energySystem.getCurrentEnergy() <= energySystem.threshold){
+    if (shaking == true && energySystem.getCurrentEnergy() > energySystem.threshold){
         
         Telegram.WebApp.HapticFeedback.impactOccurred('medium');
         tree.classList.add('shake');
